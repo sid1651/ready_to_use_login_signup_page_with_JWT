@@ -15,7 +15,8 @@ app.use(cookieParser());
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true }));
+const allowedOrigins=['http://localhost:5173']
+app.use(cors({ origin:allowedOrigins,credentials: true }));
 
 // Connect MongoDB
 connectDB();
