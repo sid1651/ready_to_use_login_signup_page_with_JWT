@@ -10,14 +10,14 @@ const Navbar = () => {
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
-
+    
     const logout = async () => {
         try {
             axios.defaults.withCredentials = true;
             const { data } = await axios.post(backendUrl + '/api/auth/logout');
             if (data.success) {
                 setIsLoggedin(false);
-                setUserData();
+                setUserData(false);
                 navigate('/');
             }
         } catch (error) {
@@ -25,6 +25,26 @@ const Navbar = () => {
         }
     };
 
+
+    const sendVerificartionOtp= async()=>{
+        
+            try{
+            axios.defaults.withCredentials=true;
+
+            const {data}=await axios.post(backendUrl+'/api/auth/send-verify-otp')
+
+            if(data.success){
+            navigate('/email-verify')
+            toast.success(data.message)
+            }else{
+                toast.error(data.message)
+            }
+            }catch(error){
+toast.error(error.message)
+            }
+            
+        
+    }
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -55,7 +75,7 @@ const Navbar = () => {
                         </div>
                         {isDropdownOpen && (
                             <ul className="dropdown">
-                                {!userData.isAccountVerified && <li>Verify Email</li>}
+                                {!userData.isAccountVerified && <li onClick={sendVerificartionOtp}>Verify Email</li>}
                                 <li onClick={logout}>Logout</li>
                             </ul>
                         )}

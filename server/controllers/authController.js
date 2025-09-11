@@ -168,6 +168,8 @@ export const verifyEmail = async (req, res) => {
     console.log("📥 [VERIFY EMAIL] Request body:", req.body);
 
     const { userId, otp } = req.body;
+    console.log('userId is also coming', userId, 'otp is coming', otp);
+
     if (!userId || !otp) {
         console.log("❌ [VERIFY EMAIL] Missing details");
         return res.json({ success: false, message: 'Missing Details' });

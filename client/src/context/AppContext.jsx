@@ -1,45 +1,49 @@
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AppContent = createContext();
 
-export const AppContextProvider = (props) => {
+export const AppContextProvider = ({ children }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(false);
 
-  axios.defaults.withCredentials=true;
+  axios.defaults.withCredentials = true;
 
-
-  const getAuthState=async()=>{
-    try{
-       const {data}=await axios.get(backendUrl+'/is-auth');
-       if(data.success){
-        setIsLoggedin(true)
-        getUserData()
-       }
-    }catch(error){
-      toast.error(error.message)
-    }
-  }
-useEffect(()=>{
-getAuthState();
- },[])
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/user/data')
-      data.success ? setUserData(data.userData) : toast.error(error.message)
+      const { data } = await axios.get(backendUrl + '/api/user/data');
+      if (data.success) {
+        setUserData(data.userData);
+      } else {
+        setUserData(false);
+      }
     } catch (error) {
-      toast.error(data.message)
+      console.error(error);
+      setUserData(false);
     }
-  }
+  };
 
+  const getAuthState = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
+      if (data.success) {
+        setIsLoggedin(true);
+        await getUserData();
+      } else {
+        setIsLoggedin(false);
+        setUserData(false);
+      }
+    } catch (error) {
+      console.error(error);
+      
+    }
+  };
 
-
-
- 
-
+  useEffect(() => {
+    getAuthState();
+  }, []);
 
   const value = {
     backendUrl,
@@ -52,7 +56,7 @@ getAuthState();
 
   return (
     <AppContent.Provider value={value}>
-      {props.children}
+      {children}
     </AppContent.Provider>
   );
 };

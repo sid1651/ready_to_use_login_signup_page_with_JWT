@@ -21,7 +21,7 @@ const userAuth = async (req, res, next) => {
         next();
     } catch (error) {
         console.error("🔥 [AUTH MIDDLEWARE] Error:", error.message);
-        res.json({ success: false, message: error.message });
+        res.json({ success: false, message: 'invalid token' });
     }
 };
 
